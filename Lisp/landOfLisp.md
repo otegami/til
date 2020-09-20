@@ -560,3 +560,59 @@ PORK
   ))
 )
 ```
+
+#### 5-2 通り道を描写する
+
+```lisp
+(defparameter *edges* '(
+    (living-room
+        (garden west door)
+        (attic upstairs ladder)
+    )
+    (garden
+        (living-room east door)
+    )
+    (attic
+        (living-room downstairs ladder)
+    )
+  )
+)
+```
+
+```lisp
+(defun describe-path (edge)
+  `(there is a ,(caddr edge) going ,(cadr edge) from here.)
+)
+```
+
+```lisp
+(describe-path '(garden west door))
+```
+
+#### 準クォートの仕組み
+
+#### 複数の通り道を一度に描写する
+
+```lisp
+(defun describe-paths (location edges)
+  (apply #'append
+    (mapcar #'describe-path
+      (cdr
+        (assoc location edges)
+      )
+    )
+  )
+)
+```
+
+- いや、読んで何をしているのかは、わかったよ。でも複雑じゃない？もっと感覚的に、てかオブジェクトとして書きたいよ。
+
+#### 描写を統合する
+
+```lisp
+(append '(mary had)'(a)'(little lamb))
+```
+
+```lisp
+(apply #'append '((mary had)(a)(little lamb)))
+```
