@@ -508,3 +508,55 @@ PORK
 
 - 好きな言葉
   - あなたの MacBook を脳に直結して思考を流し込めるその日まで
+
+### 5-1 魔法使いのアドベンチャー
+
+#### このゲームの世界
+
+#### 基本的な要求仕様
+
+- 周囲を見渡す
+- 別の場所へ移動する
+- オブジェクトを拾う
+- 拾ったオブジェクトで何かする
+
+#### 連想リストを使って景色を描写する
+
+```lisp
+(
+  defparameter *nodes* '(
+    (
+      living-room (
+        you are in the living-room.
+        a wizzard is snoring loudly on the couch.
+      )
+    )
+    (
+      garden (
+        you are in a beautiful garden.
+        there is a well in front of you.
+      )
+    )
+    (
+      attic (
+        you are in the attic.
+        there is a giant welding torch in the corner.
+      )
+    )
+  )
+)
+```
+
+#### 情景を描写する
+
+```lisp
+(assoc 'garden *nodes*)
+```
+
+```lisp
+(defun describe-location (location nodes)
+  (cadr(
+    assoc location nodes
+  ))
+)
+```
