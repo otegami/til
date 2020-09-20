@@ -616,3 +616,40 @@ PORK
 ```lisp
 (apply #'append '((mary had)(a)(little lamb)))
 ```
+
+### 5-3 特定の場所にあるオブジェクトを描写する
+
+#### 目に見えるオブジェクトをリストする
+
+```lisp
+(defparameter *objects* '(whisky bucket frog chain))
+```
+
+```lisp
+(defparameter *object-locations* '(
+  (whiskey living-room)
+  (bucket living-room)
+  (chain garden)
+  (frog garden)
+))
+```
+
+```lisp
+(defun object-at (loc objs obj-locs)
+  (labels ((at-loc-p (obj)
+        (eq (cadr (assoc obj obj-locs)) loc)))
+    (remove-if-not #'at-loc-p objs)
+  )
+)
+```
+
+#### 見えるオブジェクトを描写する
+
+```lisp
+(defun describe-objects (loc objs obj-loc)
+  (labels ((describe-obj (obj)
+    `(you see a ,obj on the floor.)))
+    (apply #'append (mapcar #'describe-obj (object-at loc objs obj-loc)))
+  )  
+)
+```
