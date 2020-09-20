@@ -232,3 +232,274 @@ PORK
 
 > (cdar '((peas carrots tomatoes) (pork beef chicken)))
 ```
+
+## 第 4 章 条件と判断
+
+- この章では、Lisp の条件分岐について紹介した。その過程で次のようなことを学んだ。
+  - Common Lisp では、式 nil、'nil、()、'()の値は全て同じである。
+  - Lisp では空リストかどうかを調べるのが簡単だ。そのためリストを頭から食べてゆく関数を簡潔
+に書ける。
+  - if等の Lisp の条件式は、条件に合致した部分の式しか評価しない。
+  - 条件式でいろんなことを一度にやりたければ、condが使える。
+  - Lisp でもの同士を比較するやり方はいくつもあるけれど、原則としてシンボルを比べる時は eqを、 それ以外のものを比べる時は equalを使う、と覚えておけば良い。
+
+### nil と　()　の対称性
+
+#### 空と偽なり
+
+```lisp
+(if '()
+  'i-am-true
+  'i-am-false
+)
+```
+
+```lisp
+(if '(1)
+  'i-am-true
+  'i-am-false
+)
+```
+
+```lisp
+(defun my-length (list)
+  (if list
+    (1+ (my-length (cdr list)))
+    0
+  )
+)
+(my-length '(list with four symbols))
+```
+
+#### () の四つの顔
+
+```lisp
+(eq '() nil)
+(eq '() ())
+(eq '() 'nil)
+```
+
+- nil と () は、例外的にデータとして扱われている
+  - 本来は、「'」が先頭についてる時にデータとして扱われるため
+
+#### if
+
+```lisp
+(if (= (+ 1 2) 3)
+  'yup
+  'nope
+)
+
+(if (= (+ 1 2) 4)
+  'yup
+  'nope
+)
+
+(if (oddp 5)
+  'odd-number
+  'even-number
+)
+```
+
+- if の場合、関数呼び出しされたときに全てが一度に評価されるているわけではない
+
+```lisp
+(if (oddp 5)
+  'odd-number
+  (/ 1 0)
+)
+```
+
+#### progn
+
+```lisp
+(defvar *number-was-odd* nil)
+
+(if (oddp 5)  
+  (progn (setf *number-was-odd* t)
+    'odd-number
+  )
+  'even-number
+)
+```
+
+#### when
+
+```lisp
+(defvar *number-was-odd* nil)
+
+(when (oddp 5)
+  (setf *number-was-odd* t)
+  'odd-number
+)
+```
+
+#### unless
+
+```lisp
+(unless (oddp 4)
+  (setf *number-is-odd* nil)
+  'even-number
+)
+```
+
+#### cond
+
+```lisp
+(defvar *arch-enemy* nil)
+(defun pudding-eater (person)
+  (cond
+    (
+      (eq person 'henry)
+        (setf *arch-enemy* 'stupid-lisp-alien)
+        '(curse you lisp alien - you ate my pudding)
+    )
+    (
+      (eq person 'johnny)
+        (setf *arch-enemy* 'unless-old-johnny)
+        '(i hope you choked on my pudding johnny)
+    )
+    (
+      t
+        '(why you eat my pudding stranger?)
+    )
+  )
+)
+```
+
+#### case
+
+```lisp
+(defun pudding-eater (person)
+  (case person
+    (
+      (henry)
+        (setf *arch-enemy* 'stupid-lisp-alien)
+        '(curse you lisp alien - you ate my pudding)
+    )
+    (
+      (johnny)
+        (setf *arch-enemy* 'unless-odd-johnny)
+        '(i hope you chocked on my pudding johnny)
+    )
+    (
+      otherwise
+        '(why you eat my pudding stranger?)
+    )
+  )
+)
+```
+
+### ちょっとした条件分岐のテクニック
+
+#### and と or を使う
+
+```lisp
+(and (oddp 5)(oddp 7)(oddp 9))
+```
+
+```lisp
+(or (oddp 4)(oddp 7)(oddp 8))
+```
+
+```lisp
+(defparameter *is-it-even* nil)
+
+(or (oddp 4)(setf *is-it-even* t))
+```
+
+```lisp
+(defparameter *is-it-even* nil)
+
+(or (oddp 5)(setf *is-it-even* t))
+```
+
+```lisp
+(if (and *file-modified*(ask-user-about-saving))
+  (save-file)
+)
+```
+
+- 真偽値を返す目的を持つ式だけを条件のところに入れている
+- 返す値の質を揃えること大切です
+
+```lisp
+(if (member 1 '(3 4 1 5))
+  'one-is-in-the-list
+  'one-is-not-in-the-list
+)
+```
+
+```lisp
+(member 1 '(3 4 1 5))
+```
+
+```lisp
+(if (member nil '(3 4 nil 4))
+  'nil-is-in-the-list
+  'nil-is-not-in-the-list
+)
+```
+
+```lisp
+(find-if #'oddp '(2 4 5 6))
+```
+
+```lisp
+(if (find-if #'oddp '(2 4 5 6))
+  'there-is-an-odd-number
+  'there-is-no-odd-number
+)
+```
+
+```lisp
+(find-if #'null '(2 4 nil 6))
+```
+
+- 上記の中から　nil の値を無事に取り出していても、この値を if に含めると偽になってしまうので、直感に反してしまう可能性がある
+
+### 比較関数 :q、equal、そしてもっと
+
+- 少なくともひどい Lisp コードを書いたかどにより鍬と鎌でベテラン Lisper から街を追い出されるなんて羽目にはならないだろう。
+
+```lisp
+(defparameter *fruit* 'apple)
+```
+
+```lisp
+(cond
+  (
+    (eq *fruit* 'apple)
+      'its-an-apple
+  )
+  (
+    (eq *fruit* 'orange)
+      'its-an-orange
+  )
+)
+```
+
+#### eq と equal の違い
+
+- Ruby で例えると
+  - eq は、「===」
+  - equal は、「==」
+
+```lisp
+(eq (list 1 2 3)(list 1 2 3))
+=> NIL
+```
+
+```lisp
+(equal (list 1 2 3)(list 1 2 3))
+=> T
+```
+
+#### eql > equal
+
+```lisp
+(eql 3.4 3.4)
+```
+
+- 文字列について大文字小文字の使い方が異なるものを比較
+- 整数と浮動小数点数を比較
