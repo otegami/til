@@ -713,3 +713,5 @@ PORK
   (cons 'item- (object-at 'body *object* *object-locations*))
 )
 ```
+
+## 第 6 章　世界とのインターフェース : Lisp でのデータの読み書き
