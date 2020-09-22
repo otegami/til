@@ -689,3 +689,19 @@ PORK
 ```
 
 - シンボル yを cadrに持つような最初の要素をリストから探し出す
+
+### 5-6 オブジェクトを手に取る
+
+```lisp
+(defun pickup (object)
+  (cond ((member object (object-at *location* *objects* *object-location*)
+  (push (list object 'body) *object-locations*)
+  '(you are now carrying the ,object))
+  (t '(you cannot get that.))))
+)
+
+(defun pickup (object) (cond ((member object
+(objects-at *location* *objects* *object-locations*)) (push (list object 'body) *object-locations*)
+`(you are now carrying the ,object))
+(t '(you cannot get that.))))
+```
