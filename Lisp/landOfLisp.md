@@ -705,3 +705,11 @@ PORK
 `(you are now carrying the ,object))
 (t '(you cannot get that.))))
 ```
+
+### 5-7 持っているものを調べる
+
+```lisp
+(defun inventory ()
+  (cons 'item- (object-at 'body *object* *object-locations*))
+)
+```
