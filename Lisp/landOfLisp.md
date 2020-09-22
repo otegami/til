@@ -669,3 +669,23 @@ PORK
   )
 )
 ```
+
+### 5-5 ゲーム世界を動き回る
+
+```lisp
+(defun walk (direction)
+  (let (
+    (next (find direction
+      (cdr (assoc *location* *edges*))
+      :key #'cadr)))
+    (if next
+      (progn (setf *location* (car next))
+        (look)
+      )
+      '(you cannot go that way.)
+    )
+  )
+)
+```
+
+- シンボル yを cadrに持つような最初の要素をリストから探し出す
