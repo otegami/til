@@ -653,3 +653,19 @@ PORK
   )  
 )
 ```
+
+### 5-4 全てを描写する
+
+```lisp
+(defparameter *location* 'living-room)
+```
+
+```lisp
+(defun look ()
+  (append
+    (describe-location *location* *nodes*)
+    (describe-paths *location* *edges*)
+    (describe-objects *location* *objects* *object-locations*)
+  )
+)
+```
