@@ -715,3 +715,71 @@ PORK
 ```
 
 ## 第 6 章　世界とのインターフェース : Lisp でのデータの読み書き
+
+### 6-1 テキストの表示と読み込み
+
+#### スクリーンへの表示
+
+```lisp
+(print "foo")
+```
+
+```lisp
+(progn
+  (prin1 "this")
+  (prin1 "is")
+  (prin1 "a")
+  (prin1 "test")
+)
+```
+
+#### ユーザに挨拶しよう
+
+```lisp
+(defun sayhello ()
+  (print "Please type your name:")
+  (let ((name (read)))
+    (print "Nice to meet you, ")
+    (print name)
+  )
+)
+```
+
+### print と read から始める
+
+```lisp
+(defun add-five ()
+  (print "please enter a number:")
+  (let ((num (read)))
+    (print "When I add five I get")
+    (print (+ num 5))
+  )
+)
+```
+
+### 人に優しいデータの読み書き
+
+```lisp
+(princ '3)
+(princ '3.4)
+(princ 'foo)
+```
+
+```lisp
+(progn
+  (princ "This sentence will be interrupted")
+  (princ #\newline)
+  (princ "by an annoying newline character.")
+)
+```
+
+```lisp
+(defun say-hello()
+  (princ "Please type your name:")
+  (let 
+    ((name (read-line)))
+    (princ "Nice to meet you,")
+    (princ name)
+  )
+)
+```
