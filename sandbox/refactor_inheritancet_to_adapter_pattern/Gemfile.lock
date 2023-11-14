@@ -2,12 +2,16 @@ GEM
   remote: https://rubygems.org/
   specs:
     minitest (5.20.0)
+    power_assert (2.0.3)
+    test-unit (3.6.1)
+      power_assert
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   minitest
+  test-unit
 
 BUNDLED WITH
    2.4.13
