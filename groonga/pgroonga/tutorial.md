@@ -61,5 +61,51 @@ EXPLAIN SELECT *, pgroonga_score(tableoid, ctid) AS score
          ->  Bitmap Index Scan on pgroonga_score_memos_content_index  (cost=0.00..0.00 rows=13 width=0)
                Index Cond: (content &@~ 'PGroonga OR PostgreSQL'::text)
 (6 rows)
+```EXPLAIN SELECT pgroonga_highlight_html (content, pgroonga_query_extract_keywords ('PostgreSQL database')) AS highlighted_content 
+FROM sample_texts
+WHERE CONTENT &@~ 'PostgreSQL database';
+
+```sql
+EXPLAIN SELECT pgroonga_highlight_html (content, pgroonga_query_extract_keywords ('PostgreSQL database')) AS highlighted_content 
+  FROM sample_texts
+  WHERE CONTENT &@~ 'PostgreSQL database';
+
+ Index Scan using pgroonga_sample_content_index on sample_texts  (cost=0.00..43.18 rows=1 width=32)
+   Index Cond: (content &@~ 'PostgreSQL database'::text)
+(2 rows)
 ```
 
+
+### Synonyms
+
+```sql
+EXPLAIN SELECT name AS synonym_names
+  FROM names
+  WHERE name &@~ pgroonga_query_expand(
+    'synonym_groups', 'synonyms', 'synonyms','斉藤' ::varchar;
+
+ Bitmap Heap Scan on public.names  (cost=0.00..29.06 rows=1 width=516) (actual time=0.975..0.976 rows=3 loops=1)
+   Output: name
+   Recheck Cond: (names.name &@~ (pgroonga_query_expand('synonym_groups'::cstring, 'synonyms'::text, 'synonyms'::text, '斉藤'::text))::character varying)
+   Heap Blocks: exact=1
+   ->  Bitmap Index Scan on pgroonga_names_index  (cost=0.00..0.00 rows=25 width=0) (actual time=0.969..0.969 rows=3 loops=1)
+         Index Cond: (names.name &@~ (pgroonga_query_expand('synonym_groups'::cstring, 'synonyms'::text, 'synonyms'::text, '斉藤'::text))::character varying)
+ Planning Time: 4.411 ms
+ Execution Time: 1.094 ms
+(8 rows)
+```
+
+```sql
+EXPLAIN ANALYZE VERBOSE
+  SELECT name AS synonym_names
+  FROM names
+  WHERE name &@~ pgroonga_query_expand(
+    'synonym_groups', 'synonyms', 'synonyms','斉藤');
+
+ Seq Scan on public.names  (cost=0.00..124.38 rows=1 width=516) (actual time=0.816..3.095 rows=3 loops=1)
+   Output: name
+   Filter: ((names.name)::text &@~ pgroonga_query_expand('synonym_groups'::cstring, 'synonyms'::text, 'synonyms'::text, '斉藤'::text))
+   Rows Removed by Filter: 3
+ Planning Time: 0.107 ms
+ Execution Time: 3.130 ms
+```
