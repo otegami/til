@@ -39,8 +39,6 @@ CMake の独自言語があり、それで書かれたプログラム
 環境検出プログラムを書いているイメージでいると良い
 - 最近流行りの Meson も同じ気持ちである
 
-
-- cmake .
-- Generator って何？
-- preset って何？
-
+## 次のアクション
+- CMake の Tutorial をやってみて雰囲気を掴んでみる
+https://cmake.org/cmake/help/latest/guide/tutorial/index.html
